@@ -1,23 +1,35 @@
+-- -*- coding: utf-8 -*-
+--
+-- HTTP API Client.
+--
+-- Copyright 2014 Alexander Tsirel
+-- http://noma4i.com
+--
+-- This code is released under a Apache License Version 2.0:
+-- https://www.apache.org/licenses/LICENSE-2.0.txt
+
+
 http = require("socket.http")
 https = require("ssl.https")
 json = (loadfile "./libs/JSON.lua")()
 loadfile ("./libs/Utils.lua")()
 
-local reqbody = ""
-local url = "https://us2.api.mailchimp.com/2.0/lists/list"
-local respbody = {}
+function api_call(...)
+  local args = {...}
+  local reqbody = args[3] or ""
 
-https.request {
-	method = "POST",
-	url = url,
-	source = ltn12.source.string(reqbody),
-	headers = {
-		["Content-Type"] = "application/x-www-form-urlencoded",
-		["Content-Length"] = #reqbody
-	},
-	sink = ltn12.sink.table(respbody)
-}
+  local respbody = {}
 
-local result = json:decode(table.concat(respbody))
+  https.request {
+  	method = args[1],
+  	url = args[2],
+  	source = ltn12.source.string(reqbody),
+  	headers = {
+  		["Content-Type"] = "application/x-www-form-urlencoded",
+  		["Content-Length"] = #reqbody
+  	},
+  	sink = ltn12.sink.table(respbody)
+  }
 
-var_dump(result)
+  return json:decode(table.concat(respbody))
+end
