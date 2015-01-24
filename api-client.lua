@@ -1,6 +1,7 @@
 http = require("socket.http")
 https = require("ssl.https")
-json = (loadfile "libs/JSON.lua")()
+json = (loadfile "./libs/JSON.lua")()
+loadfile ("./libs/Utils.lua")()
 
 local reqbody = ""
 local url = "https://us2.api.mailchimp.com/2.0/lists/list"
@@ -18,4 +19,5 @@ https.request {
 }
 
 local result = json:decode(table.concat(respbody))
-print(result.code)
+
+var_dump(result)
